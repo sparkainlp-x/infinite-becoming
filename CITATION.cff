@@ -6,7 +6,7 @@ authors:
     given-names: "Jean-François"
     affiliation: "Spark AI NLP"
     orcid: "https://orcid.org/0009-0000-9778-5374"
-version: "4.0.0"
+version: "0.1.0"
 date-released: 2026-10-16
 license: "AGPL-3.0-only"
 repository-code: "https://github.com/sparkainlp-x/infinite-becoming"
