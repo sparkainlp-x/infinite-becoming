@@ -588,7 +588,7 @@ test('README accurately scopes determinism, controls, JSON workflow and model cl
   assert.doesNotMatch(html, /<input[^>]+id="dt/);
 });
 
-test('repository metadata declares local AGPL-only testing and Spark attribution', () => {
+test('repository metadata declares local AGPL-only testing and author attribution', () => {
   const packageJson = JSON.parse(readFileSync(require.resolve('../package.json'), 'utf8'));
   const zenodo = JSON.parse(readFileSync(require.resolve('../.zenodo.json'), 'utf8'));
   const citation = readFileSync(require.resolve('../CITATION.cff'), 'utf8');
@@ -603,10 +603,13 @@ test('repository metadata declares local AGPL-only testing and Spark attribution
   assert.equal(packageJson.dependencies, undefined, 'runtime dependency list stays empty');
   assert.match(workflow, /node-version: \[20, 22\]/);
   assert.match(workflow, /npm test/);
-  assert.deepEqual(zenodo.creators.map(creator => creator.name), ['Spark']);
-  assert.match(citation, /- name: "Spark"/);
+  assert.deepEqual(zenodo.creators.map(creator => creator.name), ['Brisson, Jean-François']);
+  assert.deepEqual(zenodo.creators.map(creator => creator.orcid), ['0009-0000-9778-5374']);
+  assert.match(citation, /- family-names: "Brisson"\n\s+given-names: "Jean-François"/);
+  assert.match(citation, /orcid: "https:\/\/orcid\.org\/0009-0000-9778-5374"/);
   assert.match(citation, /license: "AGPL-3\.0-only"/);
-  assert.deepEqual([...citation.matchAll(/^\s*- name:\s*"?(.+?)"?\s*$/gm)].map(match => match[1]), ['Spark']);
+  assert.deepEqual([...citation.matchAll(/^\s*- family-names:\s*"?(.+?)"?\s*$/gm)].map(match => match[1]), ['Brisson']);
+  assert.equal(packageJson.author, 'Jean-François Brisson');
   assert.ok(license.length > 34000 && license.includes('GNU AFFERO GENERAL PUBLIC LICENSE'));
   for (const source of sources) assert.match(source, /SPDX-License-Identifier: AGPL-3\.0-only/);
 });

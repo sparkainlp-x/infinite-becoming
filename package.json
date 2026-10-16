@@ -3,7 +3,7 @@
   "version": "4.0.0",
   "private": true,
   "description": "A synthetic, uncalibrated browser-based ecosystem game",
-  "author": "Spark",
+  "author": "Jean-François Brisson",
   "license": "AGPL-3.0-only",
   "homepage": "https://sparkainlp-x.github.io/infinite-becoming/",
   "repository": {

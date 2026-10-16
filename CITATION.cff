@@ -2,8 +2,9 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "Infinite Becoming"
 authors:
-  - name: "Spark"
-    affiliation: "Spark AI NLP, Fredericton, New Brunswick, Canada"
+  - family-names: "Brisson"
+    given-names: "Jean-François"
+    affiliation: "Spark AI NLP"
     orcid: "https://orcid.org/0009-0000-9778-5374"
 version: "4.0.0"
 date-released: 2026-10-16
