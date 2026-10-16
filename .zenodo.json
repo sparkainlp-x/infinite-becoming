@@ -1,0 +1,22 @@
+{
+  "title": "Infinite Becoming",
+  "upload_type": "software",
+  "version": "4.0.0",
+  "publication_date": "2026-10-16",
+  "license": "AGPL-3.0-only",
+  "creators": [
+    {
+      "name": "Spark",
+      "affiliation": "Spark AI NLP, Fredericton, New Brunswick, Canada",
+      "orcid": "0009-0000-9778-5374"
+    }
+  ],
+  "description": "A local, synthetic, uncalibrated browser simulation. U and V are dimensionless reaction–diffusion state variables, not empirical nutrient or biomass measurements.",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/sparkainlp-x/infinite-becoming",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ]
+}

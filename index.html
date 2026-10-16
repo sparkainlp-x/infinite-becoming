@@ -1,0 +1,205 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080c15">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>Infinite Becoming — Synthetic Ecosystem Game</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080c15; --panel: #0d1422; --card: #111b2d; --line: #25344d;
+      --text: #e5edf8; --muted: #93a4bf; --cyan: #68d6ff; --green: #65dda8;
+      --red: #ff817e; --amber: #ffd36a; --blue: #78adff;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 Inter, ui-sans-serif, system-ui, sans-serif; }
+    .app { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr) 380px; }
+    .stage { min-height: 100vh; position: relative; background: #03060b; overflow: hidden; }
+    #world { width: 100%; height: 100%; min-height: 100vh; display: block; cursor: crosshair; }
+    .masthead { position: absolute; inset: 22px auto auto 26px; max-width: min(650px, calc(100% - 52px)); pointer-events: none; text-shadow: 0 2px 12px #000; }
+    .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 800; letter-spacing: .19em; text-transform: uppercase; }
+    h1 { margin: 5px 0 1px; font-size: clamp(24px, 3vw, 36px); letter-spacing: -.04em; }
+    .subtitle { color: #b5c3d7; font-size: 12px; }
+    aside { background: var(--panel); border-left: 1px solid var(--line); padding: 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; max-height: 100vh; }
+    .notice { border: 1px solid #775a26; background: #2b2112; color: #ffe4a3; border-radius: 8px; padding: 10px 11px; font-size: 12px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 9px; padding: 11px; }
+    .label { color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 7px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+    .metric { background: #080e19; border: 1px solid #ffffff0b; border-radius: 7px; padding: 7px 8px; min-width: 0; }
+    .value { font-size: 19px; font-weight: 750; color: #fff; font-variant-numeric: tabular-nums; }
+    .name { font-size: 12px; color: var(--muted); }
+    .row { display: flex; justify-content: space-between; gap: 12px; margin-top: 5px; font-size: 12px; color: var(--muted); }
+    .row span:last-child { color: var(--text); font-variant-numeric: tabular-nums; text-align: right; }
+    .controls { display: flex; gap: 6px; margin-top: 6px; }
+    button { flex: 1; min-width: 0; border: 1px solid #304664; border-radius: 6px; padding: 7px 6px; background: #17243a; color: var(--text); font-size: 12px; font-weight: 650; cursor: pointer; }
+    button:hover { border-color: var(--cyan); background: #203453; }
+    button.primary { color: #07111b; border: 0; background: linear-gradient(100deg, #66dcff, #9c9bff); }
+    button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    #world:focus-visible { outline: 2px solid var(--cyan); outline-offset: -4px; }
+    input[type="range"] { width: 100%; accent-color: var(--cyan); }
+    .log { min-height: 38px; padding: 7px; border-radius: 5px; background: #080e19; color: #d1dbea; font: 12px/1.45 ui-monospace, monospace; overflow-wrap: anywhere; }
+    .chart { width: 100%; height: 86px; display: block; margin-top: 7px; background: #080e19; border-radius: 6px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 7px; color: var(--muted); font-size: 12px; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+    .fineprint { color: var(--muted); font-size: 12px; }
+    .source-links p { margin: 5px 0; }
+    .source-links a { color: var(--cyan); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    @media (max-width: 850px) {
+      .app { grid-template-columns: 1fr; }
+      .stage { min-height: 55vh; height: 55vh; }
+      #world { min-height: 55vh; }
+      aside { max-height: none; border: 0; border-top: 1px solid var(--line); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <main class="stage">
+          <canvas id="world" role="img" tabindex="0" aria-label="Synthetic grid simulation. Use the arrow keys to cycle through agents." aria-describedby="world-summary"></canvas>
+          <p id="world-summary" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+      <header class="masthead">
+        <div class="eyebrow">Local model · deterministic seed</div>
+        <h1>Infinite Becoming</h1>
+        <div class="subtitle">A synthetic spatial eco-evolutionary simulation</div>
+      </header>
+    </main>
+    <aside>
+      <div class="notice"><strong>Synthetic and uncalibrated.</strong> U/V are dimensionless reaction–diffusion state variables—not measured nutrient or biomass. Agent energetics, private memory, and social-cue variables are simplified game rules, not claims about ecology, learning, intelligence, or consciousness.</div>
+
+      <section class="card">
+        <div class="label">Population & disease</div>
+        <div class="grid">
+          <div class="metric"><div class="value" id="herb" style="color:var(--green)">0</div><div class="name">Herbivore-role</div></div>
+          <div class="metric"><div class="value" id="carn" style="color:var(--red)">0</div><div class="name">Carnivore-role</div></div>
+          <div class="metric"><div class="value" id="total">0</div><div class="name">Total agents</div></div>
+          <div class="metric"><div class="value" id="sus" style="color:var(--blue)">0</div><div class="name">Susceptible</div></div>
+          <div class="metric"><div class="value" id="infected" style="color:var(--amber)">0</div><div class="name">Infected</div></div>
+          <div class="metric"><div class="value" id="recovered">0</div><div class="name">Recovered</div></div>
+        </div>
+        <div class="row"><span>Infection prevalence</span><span id="prevalence">0.0%</span></div>
+        <div class="row"><span>Life stages J / M / E</span><span id="age-structure">0 / 0 / 0</span></div>
+        <div class="row"><span>Births / deaths (total)</span><span id="birth-death">0 / 0</span></div>
+        <canvas class="chart" id="population-chart" width="360" height="86" aria-label="Population history"></canvas>
+      </section>
+
+      <section class="card">
+        <div class="label">Dimensionless substrate state</div>
+        <div class="row"><span>Mean U (dimensionless)</span><span id="mean-u">0.000</span></div>
+        <div class="row"><span>Mean V (dimensionless)</span><span id="mean-v">0.000</span></div>
+        <div class="row"><span>Private memory trace (mean)</span><span id="memory-signal">0.000</span></div>
+        <div class="row"><span>Social cue trace (mean)</span><span id="culture-signal">0.000</span></div>
+        <div class="fineprint" style="margin-top:7px">Agents interact with V through an invented synthetic intake rule; this does not make V ecological biomass.</div>
+        <div class="fineprint" style="margin-top:5px">Memory is a coarse, decaying record of observed V; juveniles can copy simple cues from nearby adults. These channels are simplified behavior variables.</div>
+      </section>
+
+      <section class="card">
+        <div class="label">Trait distribution (mean ± SD)</div>
+        <div class="grid">
+          <div class="metric"><div class="value" id="trait-eff">—</div><div class="name">Efficiency</div></div>
+          <div class="metric"><div class="value" id="trait-sense">—</div><div class="name">Sense</div></div>
+          <div class="metric"><div class="value" id="trait-motility">—</div><div class="name">Motility</div></div>
+          <div class="metric"><div class="value" id="trait-armor">—</div><div class="name">Armor</div></div>
+          <div class="metric"><div class="value" id="trait-longevity">—</div><div class="name">Longevity</div></div>
+          <div class="metric"><div class="value" id="trait-aggression">—</div><div class="name">Aggression</div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="label">Environment & run controls</div>
+        <div class="row"><span>Tick / season</span><span><b id="tick">0</b> · <b id="season">Spring</b></span></div>
+        <div class="row"><span>Simulated substrate time</span><span id="sim-time">0.000</span></div>
+        <div class="row"><span>Illustrative temperature</span><span id="temperature">18.0°C</span></div>
+        <div class="row"><span>Baseline F / K</span><span id="base-fk">—</span></div>
+        <div class="row"><span>Current seasonal F(t) / K(t)</span><span id="fk">—</span></div>
+        <div class="fineprint" style="margin-top:6px">Seasonal mode applies a very small bounded F/K modulation around baseline values as well as changing illustrative temperature; it is not a temperature-only comparison.</div>
+        <div class="row"><label for="feed-rate">Baseline F</label><span id="feed-value">0.0545</span></div>
+        <input id="feed-rate" type="range" min="0.005" max="0.09" step="0.0001" value="0.0545">
+        <div class="row"><label for="kill-rate">Baseline K</label><span id="kill-value">0.062</span></div>
+        <input id="kill-rate" type="range" min="0.03" max="0.08" step="0.001" value="0.062">
+        <div class="row"><label for="diff-u">U diffusion coefficient DU</label><span id="du-value">0.160</span></div>
+        <input id="diff-u" type="range" min="0.02" max="0.30" step="0.005" value="0.16">
+        <div class="row"><label for="diff-v">V diffusion coefficient DV</label><span id="dv-value">0.080</span></div>
+        <input id="diff-v" type="range" min="0.01" max="0.25" step="0.005" value="0.08">
+        <div class="row"><span>DU / DV ratio</span><span id="diff-ratio">2.00</span></div>
+        <div class="row"><span>Requested / active Δt</span><span id="diff-dt">0.800 / 0.800</span></div>
+        <div class="row"><span>Diffusion-only estimate / guarded ceiling</span><span id="diff-ceiling">1.563 / 0.800</span></div>
+        <div class="fineprint" style="margin-top:6px">The automatic Δt bound is a conservative diffusion-only estimate, not a stability proof for the nonlinear reaction–diffusion system. Compare behavior and timestep convergence across parameter ranges before interpreting patterns.</div>
+        <div class="fineprint" style="margin-top:5px">Simulated substrate time sums active Δt; agent rules and the seasonal cycle still advance by model tick. This is a numerical clock, not ecological time.</div>
+        <div class="row"><label for="builtin-preset">Parameter set</label><span id="preset-status">Current run: default seed</span></div>
+        <select id="builtin-preset" style="width:100%;padding:7px;border-radius:6px;border:1px solid var(--line);background:#080e19;color:var(--text)">
+          <option value="set-a">Set A — F .0282 / K .0541 / DU .16 / DV .08</option>
+          <option value="set-b">Set B — F .0580 / K .0650 / DU .16 / DV .08</option>
+          <option value="set-c">Set C — F .0290 / K .0570 / DU .16 / DV .08</option>
+          <option value="set-d">Set D — F .0545 / K .0620 / DU .16 / DV .08</option>
+          <option value="set-e">Set E — F .0367 / K .0649 / DU .16 / DV .08</option>
+          <option value="set-f">Set F — F .0208 / K .0576 / DU .16 / DV .08</option>
+          <option value="set-g">Set G — F .0900 / K .0590 / DU .16 / DV .08</option>
+          <option value="set-h">Set H — F .0620 / K .0609 / DU .16 / DV .08</option>
+          <option value="baseline" selected>Baseline — F .0545 / K .0620 / DU .16 / DV .08</option>
+        </select>
+        <div class="fineprint" id="builtin-preview" style="margin-top:5px">Selected parameter values are shown here; selection alone does not change the run.</div>
+        <div class="controls"><button id="apply-builtin">Apply &amp; reset full run</button></div>
+        <div class="controls">
+          <button id="pause" class="primary" aria-label="Toggle simulation run state" aria-pressed="false">Pause</button><button id="step">Step</button><button id="reset">Reset</button>
+        </div>
+        <div class="controls"><button id="new-seed">New seed &amp; reset</button></div>
+        <div class="controls">
+          <button id="save">Save state</button><button id="load">Load state</button>
+        </div>
+        <div class="controls">
+          <button id="json">Export JSON</button><button id="csv">Export CSV</button>
+        </div>
+        <div class="controls">
+          <button id="pathogen">Introduce pathogen</button><button id="bloom">Perturb V field</button>
+        </div>
+        <div class="row"><label for="v-reseed">Opt-in V reseed amount / tick</label><span id="v-reseed-value">0.000</span></div>
+        <input id="v-reseed" type="range" min="0" max="0.02" step="0.001" value="0">
+        <div class="fineprint">Zero disables reseeding. A nonzero value adds that dimensionless amount to one random V cell per endogenous model tick; this intervention is separate from baseline runs.</div>
+        <div class="row"><label for="speed">Ticks per frame</label><span id="speed-label">1×</span></div>
+        <input id="speed" type="range" min="1" max="6" value="1">
+        <div class="row"><span>Seed</span><span id="seed">—</span></div>
+      </section>
+
+      <section class="card">
+        <div class="label">Selected agent</div>
+        <div class="row"><span>ID / lineage</span><span id="selected-id">—</span></div>
+        <div class="row"><span>Role / compartment</span><span id="selected-role">—</span></div>
+        <div class="row"><span>Energy / age</span><span id="selected-energy">—</span></div>
+        <div class="row"><span>Damage / lifespan</span><span id="selected-damage">—</span></div>
+        <div class="row"><span>Traits E · S · M · A · L · G</span><span id="selected-traits">—</span></div>
+        <div class="row"><span>Offspring count</span><span id="selected-repro">—</span></div>
+      </section>
+
+      <section class="card">
+        <div class="label">Local parameter-preset library</div>
+        <div class="fineprint">Stores only F, K, DU, DV, requested Δt and seed—not the world. Applying a saved preset resets the entire run. Use Save state / Load state for a full world checkpoint.</div>
+        <label class="row" for="preset-name" style="display:block;margin-top:8px">Preset name</label>
+        <input id="preset-name" type="text" maxlength="80" placeholder="Name this parameter set" style="width:100%;padding:7px;border-radius:6px;border:1px solid var(--line);background:#080e19;color:var(--text)">
+        <div class="controls"><button id="preset-save" class="primary">Save current parameters</button><button id="preset-refresh">Refresh</button></div>
+        <select id="preset-list" aria-label="Saved parameter presets" style="width:100%;margin-top:6px;padding:7px;border-radius:6px;border:1px solid var(--line);background:#080e19;color:var(--text)"><option value="">No saved parameter presets</option></select>
+        <div class="fineprint" id="custom-preview" style="margin-top:5px">No custom preset selected. Imported presets are not applied until you choose Load &amp; reset.</div>
+        <div class="controls"><button id="preset-load">Load &amp; reset</button><button id="preset-delete">Delete</button><button id="preset-export">Export JSON</button></div>
+        <div class="controls"><button id="preset-import">Import JSON</button><button id="preset-clear">Clear all</button></div>
+        <input id="preset-file" type="file" accept="application/json,.json" hidden>
+      </section>
+
+      <section class="card">
+        <div class="label">Event log</div>
+        <div class="log" id="log" role="status">Synthetic model initialized.</div>
+        <div class="legend"><span><i class="dot" style="background:var(--green)"></i>Herbivore-role</span><span><i class="dot" style="background:var(--red)"></i>Carnivore-role</span><span><i class="dot" style="background:var(--amber)"></i>Infected</span><span><i class="dot" style="background:var(--blue)"></i>Recovered</span></div>
+      </section>
+      <div class="fineprint source-links">
+        <p>© 2026 Spark. Provided without warranty; you may convey copies under AGPL-3.0-only. Read the <a href="./LICENSE">license</a>.</p>
+        <p>Source: <a href="./app.js">UI</a> · <a href="./model.js">model</a> · <a href="./preset-library.js">presets</a> · <a href="./tests/model.test.js">tests</a>.</p>
+      </div>
+    </aside>
+  </div>
+  <script src="./model.js"></script>
+  <script src="./preset-library.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

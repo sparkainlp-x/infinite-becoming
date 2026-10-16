@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Infinite Becoming"
+authors:
+  - name: "Spark"
+    affiliation: "Spark AI NLP, Fredericton, New Brunswick, Canada"
+    orcid: "https://orcid.org/0009-0000-9778-5374"
+version: "4.0.0"
+date-released: 2026-10-16
+license: "AGPL-3.0-only"
+repository-code: "https://github.com/sparkainlp-x/infinite-becoming"
+url: "https://sparkainlp-x.github.io/infinite-becoming/"
+type: software
+abstract: "A local, synthetic, uncalibrated browser simulation. U and V are dimensionless reaction–diffusion state variables; model mechanics are illustrative game rules rather than empirical ecology."
