@@ -1,5 +1,7 @@
 # Infinite Becoming — synthetic ecosystem game
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23423943.svg)](https://doi.org/10.5281/zenodo.23423943)
+
 A small, local, browser-playable ecosystem toy prepared for Spark. It runs without third-party runtime dependencies and makes no claim to simulate consciousness or predict real ecosystems.
 
 **Play online:** https://sparkainlp-x.github.io/infinite-becoming/
@@ -56,3 +58,7 @@ The suite covers deterministic runs and exact save/load continuation (including 
 ## License
 
 Licensed under **AGPL-3.0-only**; see [`LICENSE`](LICENSE). The project has no third-party runtime dependencies.
+
+## DOI
+
+Concept DOI (all versions): [10.5281/zenodo.23423943](https://doi.org/10.5281/zenodo.23423943). Version DOI for v0.1.0: [10.5281/zenodo.23423944](https://doi.org/10.5281/zenodo.23423944).

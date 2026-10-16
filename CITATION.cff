@@ -8,6 +8,14 @@ authors:
     orcid: "https://orcid.org/0009-0000-9778-5374"
 version: "0.1.0"
 date-released: 2026-10-16
+doi: 10.5281/zenodo.23423943
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23423943
+    description: "Concept DOI (all versions)"
+  - type: doi
+    value: 10.5281/zenodo.23423944
+    description: "Version DOI for v0.1.0"
 license: "AGPL-3.0-only"
 repository-code: "https://github.com/sparkainlp-x/infinite-becoming"
 url: "https://sparkainlp-x.github.io/infinite-becoming/"
