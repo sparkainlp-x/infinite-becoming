@@ -57,6 +57,8 @@ The suite covers deterministic runs and exact save/load continuation (including 
 
 ## License
 
+Copyright (c) 2026 Jean-François Brisson, Spark AI NLP.
+
 Licensed under **AGPL-3.0-only**; see [`LICENSE`](LICENSE). The project has no third-party runtime dependencies.
 
 ## DOI
